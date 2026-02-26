@@ -1,47 +1,52 @@
 import time
 import random
+import asyncio
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
+from playwright.async_api import async_playwright
 
 def random_sleep(min=0.0, max=5.0):
     random_num = random.uniform(min, max)
     time.sleep(random_num)
 
-def main():
+async def main():
     print('Hello from mini-chef!')
 
-    driver = webdriver.Chrome()
-    actions = ActionChains(driver)
+    async with async_playwright() as playwright:
+        browser = await playwright.firefox.launch(headless=False)
+        page = await browser.new_page()
 
-    snapinsta_url = 'https://snapinsta.to/en/instagram-reels-downloader'
-    snapinsta_url = 'https://www.instagram.com/reel/DTwaCXHESPd/?igsh=eXVjaTZ3azJwMGd1'
-    driver.get(snapinsta_url)
+        await page.goto('https://snapinsta.to/en/instagram-reels-downloader')
 
-    input_element = driver.find_element(By.ID, 's_input')
-    random_sleep()
+        random_sleep()
 
-    actions.move_to_element(input_element).perform()
-    random_sleep()
+        input = page.get_by_placeholder('Paste url Instagram')
+        button = page.get_by_role('button', name='Download')
 
-    actions.click(input_element).perform()
-    random_sleep()
+        await input.hover()
+        random_sleep()
 
-    url_to_download = 'https://www.instagram.com/reel/DTwaCXHESPd/?igsh=eXVjaTZ3azJwMGd1'
-    actions.send_keys(url_to_download).perform()
-    random_sleep()
+        await input.click()
+        random_sleep()
 
-    btn_element = driver.find_element(By.CLASS_NAME, 'btn-default')
-    random_sleep(0.0, 1)
+        await input.press_sequentially('https://www.instagram.com/beatrizcontreras.31/reel/DVEeGePD0Mh/')
+        await button.hover()
+        random_sleep()
 
-    actions.move_to_element(btn_element).perform()
-    random_sleep()
+        await button.click()
+        random_sleep()
 
-    actions.click(btn_element).perform()
-    random_sleep()
+        download_button = page.locator('a[title="Download Video"]')
+        random_sleep()
+        random_sleep()
 
-    driver.quit()
+        async with page.expect_download() as download_info:
+            await download_button.click()
+
+        download = await download_info.value
+        print(download.suggested_filename)  # e.g. "video.mp4"
+
+        await browser.close()
+
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
