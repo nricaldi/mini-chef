@@ -7,9 +7,8 @@ import utils as utils
 
 from playwright.async_api import async_playwright
 
-
+INSTA_AUDIO_IDENTIFIER='t2'
 INSTA_VIDEO_IDENTIFIER='t16'
-INSTA_AUDEO_IDENTIFIER='t2'
 
 video_urls = set()
 
@@ -47,15 +46,18 @@ async def main():
     if len(video_urls) == 0:
         return
 
-    first_url = video_urls.pop()
+    count = 0
+    for url in video_urls:
+        response = requests.get(url, stream=True)
 
-    print(f'url: {first_url}')
+        video_type = 'audio' if INSTA_AUDIO_IDENTIFIER in url else 'video'
 
-    response = requests.get(first_url, stream=True)
+        name = f'{video_type}_{count}.mp4'
+        count += 1
 
-    with open('video.mp4', 'wb') as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            f.write(chunk)
+        with open(name, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
 
 
 
