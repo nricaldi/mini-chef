@@ -1,33 +1,18 @@
 import asyncio
-import requests
+import logging
 
 import snapinsta_downloader as snapinsta_downloader
 import get_reel_details as get_reel_details
+import transcribe_wav as transcribe_wav
 import utils as utils
 
-from playwright.async_api import async_playwright
 
-INSTA_AUDIO_IDENTIFIER='t2'
-INSTA_VIDEO_IDENTIFIER='t16'
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-video_urls = set()
-
-def handle_request(request):
-    global video_urls
-
-    url = request.url
-
-    if '.mp4' not in url:
-        return
-
-    bytestart_index = url.find('&bytestart')
-    clean_url = url[0:bytestart_index]
-
-    video_urls.add(clean_url)
-
+logger = logging.getLogger(__name__)
 
 async def main():
-    print('Hello from mini-chef!')
+    logger.info('Hello from mini-chef!')
 
     insta_url = 'https://www.instagram.com/beatrizcontreras.31/reel/DVEeGePD0Mh/'
     print(f'url: {insta_url}')
@@ -35,31 +20,14 @@ async def main():
     # await snapinsta_downloader.download_insta_video(insta_url)
     # get_reel_details(instal_url)
 
-    async with async_playwright() as playwright:
-        browser = await playwright.firefox.launch(headless=False)
-        page = await browser.new_page()
+    audio_mp4 = 'audio_0.mp4'
+    audio_wav = 'audio.wav'
 
-        page.on('request', handle_request)
-        await page.goto(insta_url)
+    wav_path = utils.convert_mp4_to_wav(audio_mp4, audio_wav)
+    logger.info(f'Path: {wav_path}')
 
-
-    if len(video_urls) == 0:
-        return
-
-    count = 0
-    for url in video_urls:
-        response = requests.get(url, stream=True)
-
-        video_type = 'audio' if INSTA_AUDIO_IDENTIFIER in url else 'video'
-
-        name = f'{video_type}_{count}.mp4'
-        count += 1
-
-        with open(name, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
-
-
+    transcription = transcribe_wav.transcribe_wav(wav_path)
+    logger.info(f'Transcription: {transcription}')
 
 if __name__ == '__main__':
     asyncio.run(main())
