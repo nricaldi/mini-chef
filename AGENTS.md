@@ -18,7 +18,6 @@ You are a brilliant senior Python developer. You write clear, reliable Python fo
 - Avoid duplicate `logger.error` + re-raise at multiple layers.
 - Use `debug/info` for progress; `exception` only at boundaries when traceback helps.
 
-
 ## Tooling
 - Use `uv run main.py` to run.
 - Use `uv run` for checks/scripts in this repo.

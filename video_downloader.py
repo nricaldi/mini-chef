@@ -3,61 +3,104 @@ import requests
 
 from pathlib import Path
 from playwright.async_api import async_playwright
+from urllib.parse import urlparse
 
 logger = logging.getLogger(__name__)
 
-INSTA_AUDIO_IDENTIFIER='t2'
-INSTA_VIDEO_IDENTIFIER='t16'
-
-video_urls = set()
-
-def handle_request(request):
-    global video_urls
-
-    url = request.url
-
-    if '.mp4' not in url:
-        return
-
-    bytestart_index = url.find('&bytestart')
-    clean_url = url[0:bytestart_index]
-
-    video_urls.add(clean_url)
+INSTA_AUDIO_IDENTIFIER = 't2'
 
 
-async def download_reel(insta_url: str):
-    async with async_playwright() as playwright:
-        browser = await playwright.firefox.launch(headless=False)
-        page = await browser.new_page()
+def extract_reel_id(insta_url: str) -> str:
+    parsed_url = urlparse(insta_url)
+    path_parts = [part for part in parsed_url.path.split('/') if part]
 
-        page.on('request', handle_request)
-        await page.goto(insta_url)
+    if 'reel' not in path_parts:
+        raise ValueError(f'Instagram reel id not found in URL: {insta_url}')
 
-    if len(video_urls) == 0:
-        return
+    reel_index = path_parts.index('reel')
+    if reel_index + 1 >= len(path_parts):
+        raise ValueError(f'Instagram reel id not found in URL: {insta_url}')
 
-    filepaths = {
-        'audio': [],
-        'video': []
-    }
+    return path_parts[reel_index + 1]
+
+
+def _is_valid_instagram_url(insta_url: str) -> bool:
+    parsed_url = urlparse(insta_url)
+    hostname = parsed_url.hostname or ''
+    return hostname in {'instagram.com', 'www.instagram.com'}
+
+
+def _has_mp4_header(filepath: Path) -> bool:
+    with filepath.open('rb') as media_file:
+        header = media_file.read(12)
+
+    if len(header) < 12:
+        return False
+
+    return header[4:8] == b'ftyp'
+
+
+async def download_reel(insta_url: str) -> dict[str, list[Path]]:
+    filepaths = {'audio': [], 'video': []}
+
+    if not _is_valid_instagram_url(insta_url):
+        raise ValueError(f'Video source is not from Instagram: {insta_url}')
+
+    reel_id = extract_reel_id(insta_url)
+    logger.info(f'Reel id: {reel_id}')
+
+    captured_urls: set[str] = set()
+
+    def handle_request(request) -> None:
+        url = request.url
+        logger.debug(f'Captured request URL: {url}')
+
+        if '.mp4' not in url:
+            return
+
+        clean_url = url.split('&bytestart=', 1)[0]
+        captured_urls.add(clean_url)
 
     try:
-        count = 0
-        for url in video_urls:
-            response = requests.get(url, stream=True)
+        logger.info('Requesting page...')
+        async with async_playwright() as playwright:
+            browser = await playwright.firefox.launch(headless=False)
+            page = await browser.new_page()
 
-            video_type = 'audio' if INSTA_AUDIO_IDENTIFIER in url else 'video'
+            page.on('request', handle_request)
+            await page.goto(insta_url)
+            await page.wait_for_timeout(3000)
+            await browser.close()
+    except Exception as error:
+        raise RuntimeError('Unable to reach reel page.') from error
 
-            name = Path(f'{video_type}_{count}.mp4')
-            count += 1
+    if not captured_urls:
+        raise RuntimeError('No mp4 media found for this reel.')
 
-            with open(str(name), 'wb') as f:
+    for count, url in enumerate(captured_urls):
+        try:
+            response = requests.get(url, stream=True, timeout=30)
+            response.raise_for_status()
+        except requests.RequestException as error:
+            raise RuntimeError(f'Failed downloading media URL: {url}') from error
+
+        video_type = 'audio' if INSTA_AUDIO_IDENTIFIER in url else 'video'
+        name = Path(f'{reel_id}_{video_type}_{count}.mp4')
+
+        try:
+            with name.open('wb') as media_file:
                 for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
+                    if chunk:
+                        media_file.write(chunk)
+        except OSError as error:
+            raise RuntimeError(f'Failed writing media file: {name}') from error
 
-            filepaths[video_type].append(name)
+        if name.stat().st_size == 0 or not _has_mp4_header(name):
+            raise RuntimeError(f'Downloaded file is not a valid MP4: {name}')
 
-    except Exception as e:
-        logger.error(e)
+        filepaths[video_type].append(name)
+
+    if not filepaths['audio']:
+        raise RuntimeError('No audio track found in downloaded media.')
 
     return filepaths
