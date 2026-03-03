@@ -10,6 +10,16 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 logger = logging.getLogger(__name__)
 
+def transcribe_mp4(audio_filepath) -> str:
+    audio_wav = 'audio.wav'
+    wav_path = utils.convert_mp4_to_wav(audio_filepath, audio_wav)
+    logger.info(f'Path: {wav_path}')
+
+    transcription = transcribe_wav.transcribe_wav(wav_path)
+    logger.debug(f'Transcription: {transcription}')
+
+    return transcription
+
 
 async def main():
     logger.info('Hello from mini-chef!')
@@ -26,12 +36,11 @@ async def main():
             raise RuntimeError('No audio files found in downloaded media.')
 
         audio_filepath = audio_files[0]
-        audio_wav = 'audio.wav'
-        wav_path = utils.convert_mp4_to_wav(audio_filepath, audio_wav)
-        logger.info(f'Path: {wav_path}')
+        transcription = transcribe_mp4(audio_filepath)
 
-        transcription = transcribe_wav.transcribe_wav(wav_path)
         logger.info(f'Transcription: {transcription}')
+        logger.info('All done thank you come again')
+
     except ValueError as error:
         logger.error(f'Invalid input: {error}')
     except RuntimeError as error:
