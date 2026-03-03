@@ -29,9 +29,9 @@ async def main():
 
     # get_reel_details(instal_url)
     try:
-        filepaths = await video_downloader.download_reel(insta_url)
+        media = await video_downloader.download_reel_media(insta_url)
 
-        audio_files = filepaths.get('audio', [])
+        audio_files = media.get('audio', [])
         if not audio_files:
             raise RuntimeError('No audio files found in downloaded media.')
 

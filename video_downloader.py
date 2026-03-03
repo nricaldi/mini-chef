@@ -24,12 +24,6 @@ def extract_reel_id(insta_url: str) -> str:
     return path_parts[reel_index + 1]
 
 
-def _is_valid_instagram_url(insta_url: str) -> bool:
-    parsed_url = urlparse(insta_url)
-    hostname = parsed_url.hostname or ''
-    return hostname in {'instagram.com', 'www.instagram.com'}
-
-
 def _has_mp4_header(filepath: Path) -> bool:
     with filepath.open('rb') as media_file:
         header = media_file.read(12)
@@ -40,7 +34,23 @@ def _has_mp4_header(filepath: Path) -> bool:
     return header[4:8] == b'ftyp'
 
 
-async def download_reel(insta_url: str) -> dict[str, list[Path]]:
+def _is_valid_instagram_url(insta_url: str) -> bool:
+    parsed_url = urlparse(insta_url)
+    hostname = parsed_url.hostname or ''
+    return hostname in {'instagram.com', 'www.instagram.com'}
+
+
+def _write_media(response, name):
+    if Path(name).exists():
+        logging.info(f'Already created. Path: {name}')
+        return
+
+    with name.open('wb') as media_file:
+        for chunk in response.iter_content(chunk_size=8192):
+            media_file.write(chunk)
+
+
+async def download_reel_media(insta_url: str) -> dict[str, list[Path]]:
     filepaths = {'audio': [], 'video': []}
 
     if not _is_valid_instagram_url(insta_url):
@@ -77,7 +87,7 @@ async def download_reel(insta_url: str) -> dict[str, list[Path]]:
     if not captured_urls:
         raise RuntimeError('No mp4 media found for this reel.')
 
-    for count, url in enumerate(captured_urls):
+    for url in captured_urls:
         try:
             response = requests.get(url, stream=True, timeout=30)
             response.raise_for_status()
@@ -85,13 +95,10 @@ async def download_reel(insta_url: str) -> dict[str, list[Path]]:
             raise RuntimeError(f'Failed downloading media URL: {url}') from error
 
         video_type = 'audio' if INSTA_AUDIO_IDENTIFIER in url else 'video'
-        name = Path(f'{reel_id}_{video_type}_{count}.mp4')
+        name = Path(f'{reel_id}_{video_type}.mp4')
 
         try:
-            with name.open('wb') as media_file:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk:
-                        media_file.write(chunk)
+            _write_media(response, name)
         except OSError as error:
             raise RuntimeError(f'Failed writing media file: {name}') from error
 
