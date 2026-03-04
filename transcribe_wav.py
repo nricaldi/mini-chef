@@ -9,13 +9,17 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-def transcribe_wav(audio_wav: Path) -> str:
+def transcribe_wav(audio_file_path: Path | None) -> str:
     '''
     Call openai whisper model to transcribe wav to text
     '''
 
     logger.debug('psst...')
     logger.info('Trasncribing wav')
+
+    if audio_file_path == None:
+        logger.error('No audio file received.')
+        return ''
 
     start_time = time.perf_counter()
 
@@ -26,7 +30,7 @@ def transcribe_wav(audio_wav: Path) -> str:
     elapsed_time = end_time - start_time
     logger.info(f'Loaded model: {model_name} in {elapsed_time:.4f} seconds')
 
-    result = model.transcribe(str(audio_wav))
+    result = model.transcribe(str(audio_file_path))
     text = result.get('text')
 
     return str(text)

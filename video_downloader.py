@@ -24,8 +24,8 @@ def extract_reel_id(insta_url: str) -> str:
     return path_parts[reel_index + 1]
 
 
-def _has_mp4_header(filepath: Path) -> bool:
-    with filepath.open('rb') as media_file:
+def _has_mp4_header(file_path: Path) -> bool:
+    with file_path.open('rb') as media_file:
         header = media_file.read(12)
 
     if len(header) < 12:
@@ -49,9 +49,8 @@ def _write_media(response, name):
         for chunk in response.iter_content(chunk_size=8192):
             media_file.write(chunk)
 
-
-async def download_reel_media(insta_url: str) -> dict[str, list[Path]]:
-    filepaths = {'audio': [], 'video': []}
+async def download_reel_media(insta_url: str) -> dict[str, Path]:
+    file_paths = {'audio': Path(), 'video': Path()}
 
     if not _is_valid_instagram_url(insta_url):
         raise ValueError(f'Video source is not from Instagram: {insta_url}')
@@ -105,9 +104,6 @@ async def download_reel_media(insta_url: str) -> dict[str, list[Path]]:
         if name.stat().st_size == 0 or not _has_mp4_header(name):
             raise RuntimeError(f'Downloaded file is not a valid MP4: {name}')
 
-        filepaths[video_type].append(name)
+        file_paths[video_type] = name
 
-    if not filepaths['audio']:
-        raise RuntimeError('No audio track found in downloaded media.')
-
-    return filepaths
+    return file_paths

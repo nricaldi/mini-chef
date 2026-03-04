@@ -19,7 +19,7 @@ def random_sleep(min_seconds: float = 0.0, max_seconds: float = 5.0) -> None:
     time.sleep(random_num)
 
 
-def convert_mp4_to_wav(mp4_path: Path | str, wav_filename: Path | str, *, overwrite: bool = False) -> Path:
+def convert_mp4_to_wav(mp4_path: Path, *, overwrite: bool = False) -> Path:
     '''
     Converts an MP4 file to a WAV file using ffmpeg via subprocess.
     Define the ffmpeg command:
@@ -31,20 +31,16 @@ def convert_mp4_to_wav(mp4_path: Path | str, wav_filename: Path | str, *, overwr
     '''
     logger.info('Generating wav file...')
 
-    input_path = Path(mp4_path)
-    if input_path.suffix.lower() != '.mp4':
-        raise ValueError(f'Input file must end with .mp4: {input_path}')
+    if mp4_path.suffix.lower() != '.mp4':
+        raise ValueError(f'Input file must end with .mp4: {mp4_path}')
 
-    if not input_path.exists():
-        raise FileNotFoundError(f'Input file not found: {input_path}')
+    if not mp4_path.exists():
+        raise FileNotFoundError(f'Input file not found: {mp4_path}')
 
-    if not input_path.is_file():
-        raise ValueError(f'Input path is not a file: {input_path}')
+    if not mp4_path.is_file():
+        raise ValueError(f'Input path is not a file: {mp4_path}')
 
-    wav_path = Path(wav_filename)
-    if wav_path.suffix.lower() != '.wav':
-        raise ValueError(f'Output file must end with .wav: {wav_path}')
-
+    wav_path = mp4_path.with_suffix('.wav')
     if wav_path.exists() and not overwrite:
         logger.info(f'Wav file already exists, skipping conversion: {wav_path}')
         return wav_path
@@ -52,7 +48,7 @@ def convert_mp4_to_wav(mp4_path: Path | str, wav_filename: Path | str, *, overwr
     command = [
         'ffmpeg',
         '-i',
-        str(input_path),
+        str(mp4_path),
         '-vn',
         '-acodec',
         'pcm_s16le',
@@ -75,15 +71,13 @@ def convert_mp4_to_wav(mp4_path: Path | str, wav_filename: Path | str, *, overwr
     except FileNotFoundError as error:
         raise FileNotFoundError('ffmpeg not found. Install ffmpeg and ensure it is in PATH.') from error
     except subprocess.TimeoutExpired as error:
-        raise RuntimeError(f'ffmpeg conversion timed out for: {input_path}') from error
+        raise RuntimeError(f'ffmpeg conversion timed out for: {mp4_path}') from error
     except subprocess.CalledProcessError as error:
         stderr_output = (error.stderr or '').strip()
-        raise RuntimeError(
-            f'ffmpeg conversion failed for {input_path}: {stderr_output}'
-        ) from error
+        raise RuntimeError(f'ffmpeg conversion failed for {mp4_path}: {stderr_output}') from error
 
     if not wav_path.exists() or wav_path.stat().st_size == 0:
         raise RuntimeError(f'WAV output missing or empty: {wav_path}')
 
-    logger.info(f'Successfully converted {input_path} to {wav_path}')
+    logger.info(f'Successfully converted {mp4_path} to {wav_path}')
     return wav_path
