@@ -19,9 +19,12 @@ async def main():
     insta_url = 'https://www.instagram.com/beatrizcontreras.31/reel/DVEeGePD0Mh/'
     logger.info(f'url: {insta_url}')
 
-    # reel_details = get_reel_details.get_reel_details(insta_url)
-
     try:
+        logger.info('Fetching reel details...')
+        reel_details = get_reel_details.get_reel_details(insta_url)
+
+        logger.info(f'Details found: {reel_details}')
+
         media = await video_downloader.download_reel_media(insta_url)
 
         audio_file_path = media.get('audio')
@@ -36,7 +39,6 @@ async def main():
         video_file_path = media.get('video')
 
         # video_text = process_video(video_file_path)
-
 
         logger.info('All done thank you come again')
     except ValueError as error:

@@ -6,8 +6,8 @@ import utils as utils
 
 from pathlib import Path
 
-
 logger = logging.getLogger(__name__)
+
 
 def transcribe_wav(audio_file_path: Path | None) -> str:
     '''
@@ -15,7 +15,7 @@ def transcribe_wav(audio_file_path: Path | None) -> str:
     '''
 
     logger.debug('psst...')
-    logger.info('Trasncribing wav')
+    logger.info('Transcribing wav')
 
     if audio_file_path == None:
         logger.error('No audio file received.')

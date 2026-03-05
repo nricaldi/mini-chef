@@ -1,18 +1,39 @@
 import html
+import logging
 import requests
 
 from bs4 import BeautifulSoup
 
+logger = logging.getLogger(__name__)
+
+
+def _get_soup_property(soup: BeautifulSoup, property: str) -> str:
+    tag = soup.find('meta', attrs={'property': property})
+
+    content = tag.get('content') if tag else ''
+    return html.unescape(str(content)).strip()
+
+
 def get_reel_details(insta_url: str):
+    reel_details = {
+        'title': '',
+        'description': '',
+        'image': ''
+    }
+
     response = requests.get(insta_url)
     soup = BeautifulSoup(response.text, 'lxml')
 
+    title = 'og:title'
+    image = 'og:image'
     description = 'og:description'
 
-    soup.find(description)
+    reel_details['title'] = _get_soup_property(soup, title)
+    reel_details['image'] = _get_soup_property(soup, image)
+    reel_details['description'] = _get_soup_property(soup, description)
 
-    tag = soup.find('meta', attrs={'property': 'og:description'})
-    raw = tag['content'] if tag else ''
-    caption = html.unescape(raw).strip()
+    logger.info(f'Title: {reel_details['title']}')
+    logger.info(f'Image: {reel_details['image']}')
+    logger.info(f'Description: {reel_details['description']}')
 
-    print(caption)
+    return reel_details

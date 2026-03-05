@@ -49,6 +49,7 @@ def _write_media(response, name):
         for chunk in response.iter_content(chunk_size=8192):
             media_file.write(chunk)
 
+
 async def download_reel_media(insta_url: str) -> dict[str, Path]:
     file_paths = {'audio': Path(), 'video': Path()}
 
