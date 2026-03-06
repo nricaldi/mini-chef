@@ -1,3 +1,5 @@
+import io
+import json
 import logging
 import random
 import subprocess
@@ -6,17 +8,6 @@ import time
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
-
-
-def random_sleep(min_seconds: float = 0.0, max_seconds: float = 5.0) -> None:
-    if min_seconds < 0 or max_seconds < 0:
-        raise ValueError('Sleep bounds must be non-negative.')
-
-    if min_seconds > max_seconds:
-        raise ValueError('min_seconds must be less than or equal to max_seconds.')
-
-    random_num = random.uniform(min_seconds, max_seconds)
-    time.sleep(random_num)
 
 
 def convert_mp4_to_wav(mp4_path: Path, *, overwrite: bool = False) -> Path:
@@ -81,3 +72,47 @@ def convert_mp4_to_wav(mp4_path: Path, *, overwrite: bool = False) -> Path:
 
     logger.info(f'Successfully converted {mp4_path} to {wav_path}')
     return wav_path
+
+
+def get_buffer_media_type(buffer: io.BytesIO) -> str:
+    buffer.seek(0)
+
+    result = subprocess.run(
+        [
+            'ffprobe',
+            '-v', 'quiet',
+            '-print_format', 'json',
+            '-show_streams',
+            '-i', 'pipe:0'  # read from stdin
+        ],
+        input=buffer.read(),
+        capture_output=True
+    )
+
+    data = json.loads(result.stdout)
+    streams = data.get('streams', [])
+
+    codec_types = {s['codec_type'] for s in streams}
+
+    has_video = 'video' in codec_types
+    has_audio = 'audio' in codec_types
+
+    if has_video and has_audio:
+        return 'both'
+    elif has_video:
+        return 'video'
+    elif has_audio:
+        return 'audio'
+    else:
+        return 'none'
+
+
+def random_sleep(min_seconds: float = 0.0, max_seconds: float = 5.0) -> None:
+    if min_seconds < 0 or max_seconds < 0:
+        raise ValueError('Sleep bounds must be non-negative.')
+
+    if min_seconds > max_seconds:
+        raise ValueError('min_seconds must be less than or equal to max_seconds.')
+
+    random_num = random.uniform(min_seconds, max_seconds)
+    time.sleep(random_num)

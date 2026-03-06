@@ -1,14 +1,13 @@
 import asyncio
 import logging
 
-from pathlib import Path
-
 import video_downloader as video_downloader
 import get_reel_details as get_reel_details
 import transcribe_wav as transcribe_wav
+import video_processor as video_processor
 import utils as utils
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +37,7 @@ async def main():
 
         video_file_path = media.get('video')
 
-        # video_text = process_video(video_file_path)
+        video_text = video_processor.process_video(video_file_path)
 
         logger.info('All done thank you come again')
     except ValueError as error:
