@@ -32,8 +32,4 @@ def get_reel_details(insta_url: str):
     reel_details['image'] = _get_soup_property(soup, image)
     reel_details['description'] = _get_soup_property(soup, description)
 
-    logger.info(f'Title: {reel_details['title']}')
-    logger.info(f'Image: {reel_details['image']}')
-    logger.info(f'Description: {reel_details['description']}')
-
     return reel_details

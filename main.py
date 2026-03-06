@@ -39,6 +39,8 @@ async def main(insta_url: str):
 
         video_text = video_processor.process_video(video_file_path)
 
+        logger.info(f'Video text: {video_text}')
+
         logger.info('All done thank you come again')
     except ValueError as error:
         logger.error(f'Invalid input: {error}')
@@ -55,10 +57,10 @@ if __name__ == '__main__':
     # nothing in description. speaks instructions + ingredient. no text in video. speaks spanish
     insta_url = 'https://www.instagram.com/beatrizcontreras.31/reel/DVEeGePD0Mh/'
 
-    # ingredients in description. speaks instructions + ingredients
-    insta_url = 'https://www.instagram.com/reel/DVeEznrgMV7/?igsh=bXNkcXpyMjdpeW0w'
-
     # name + ingredients in description. no speaking. text instructions in video
     insta_url = 'https://www.instagram.com/reel/DVJJb9vjgNR/'
+
+    # ingredients in description. speaks instructions + ingredients
+    insta_url = 'https://www.instagram.com/reel/DVeEznrgMV7/'
 
     asyncio.run(main(insta_url))
