@@ -27,7 +27,6 @@ def process_video(video_file_path: Path | None) -> str:
         logger.error('No audio file received.')
         return ''
 
-    # reader = easyocr.Reader(['en'], gpu=True)
     reader = easyocr.Reader(['en'])
     cap = cv.VideoCapture(video_file_path)
 
@@ -54,9 +53,7 @@ def process_video(video_file_path: Path | None) -> str:
         logger.info(f'Frame: {frame_count}')
         cv.imshow('Video', frame)
 
-        # result = reader.readtext(frame, detail=0)
         results = reader.readtext(frame, paragraph=True, detail=0)
-
         if len(results) == 0:
             continue
 
