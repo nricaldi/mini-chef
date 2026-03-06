@@ -12,11 +12,11 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger(__name__)
 
 
-async def main():
+async def main(insta_url: str):
     logger.info('Hello from mini-chef!')
-
-    insta_url = 'https://www.instagram.com/beatrizcontreras.31/reel/DVEeGePD0Mh/'
     logger.info(f'url: {insta_url}')
+
+    # TODO - Remove any user identifying information using urlparse
 
     try:
         logger.info('Fetching reel details...')
@@ -51,4 +51,14 @@ async def main():
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+
+    # nothing in description. speaks instructions + ingredient. no text in video. speaks spanish
+    insta_url = 'https://www.instagram.com/beatrizcontreras.31/reel/DVEeGePD0Mh/'
+
+    # ingredients in description. speaks instructions + ingredients
+    insta_url = 'https://www.instagram.com/reel/DVeEznrgMV7/?igsh=bXNkcXpyMjdpeW0w'
+
+    # name + ingredients in description. no speaking. text instructions in video
+    insta_url = 'https://www.instagram.com/reel/DVJJb9vjgNR/'
+
+    asyncio.run(main(insta_url))
