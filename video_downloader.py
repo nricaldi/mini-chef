@@ -32,6 +32,10 @@ def _is_valid_instagram_url(insta_url: str) -> bool:
 
 
 def _write_media(media: io.BytesIO, file_path: Path):
+    if file_path.exists():
+        logger.info(f'File lready exists: {file_path}')
+        return
+
     with open(file_path, 'wb') as f:
         f.write(media.getbuffer()) 
 
