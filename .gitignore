@@ -8,8 +8,9 @@ wheels/
 
 .DS_Store
 
-# Virtual environments
+# Environments
 .venv
+.env
 
 *.mp4
 *.wav
