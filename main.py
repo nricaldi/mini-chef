@@ -1,11 +1,15 @@
 import asyncio
+import dotenv
 import logging
 
-import video_downloader as video_downloader
 import get_reel_details as get_reel_details
+import recipe_generator as recipe_generator
 import transcribe_wav as transcribe_wav
-import video_processor as video_processor
 import utils as utils
+import video_downloader as video_downloader
+import video_processor as video_processor
+
+from google import genai
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -33,6 +37,7 @@ async def main(insta_url: str):
 
             logger.info(f'Transcription: {transcription}')
         else:
+            transcription = ''
             logger.warning('No audio file found')
 
         video_file_path = media.get('video')
@@ -40,6 +45,12 @@ async def main(insta_url: str):
         video_text = video_processor.process_video(video_file_path)
 
         logger.info(f'Video text: {video_text}')
+
+        title = reel_details.get('title', '')
+        description = reel_details.get('description', '')
+        client = genai.Client()
+
+        recipe_generator.generate_recipe(client, title, description, transcription, video_text)
 
         logger.info('All done thank you come again')
     except ValueError as error:
@@ -63,4 +74,5 @@ if __name__ == '__main__':
     # ingredients in description. speaks instructions + ingredients
     insta_url = 'https://www.instagram.com/reel/DVeEznrgMV7/'
 
+    dotenv.load_dotenv()
     asyncio.run(main(insta_url))

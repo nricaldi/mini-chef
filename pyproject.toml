@@ -8,9 +8,11 @@ dependencies = [
     "asyncio>=4.0.0",
     "beautifulsoup4>=4.14.3",
     "easyocr>=1.7.2",
+    "google-genai>=1.47.0",
     "lxml>=6.0.2",
     "openai-whisper>=20250625",
     "opencv-python>=4.13.0.92",
     "playwright>=1.58.0",
+    "python-dotenv>=1.2.1",
     "requests>=2.32.5",
 ]
