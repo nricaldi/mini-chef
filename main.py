@@ -50,7 +50,8 @@ async def main(insta_url: str):
         description = reel_details.get('description', '')
         client = genai.Client()
 
-        recipe_generator.generate_recipe(client, title, description, transcription, video_text)
+        recipe = recipe_generator.generate_recipe(client, title, description, transcription, video_text)
+        logger.info(f'Recipe: {recipe}')
 
         logger.info('All done thank you come again')
     except ValueError as error:

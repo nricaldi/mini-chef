@@ -1,5 +1,9 @@
+import logging
+
 from google import genai
 from google.genai import types
+
+logger = logging.getLogger(__name__)
 
 def generate_recipe(client: genai.Client, title: str, description: str, transcription: str, video_text: str) -> str:
 
