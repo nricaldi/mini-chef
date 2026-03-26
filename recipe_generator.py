@@ -43,9 +43,9 @@ def generate_recipe(client: genai.Client, title: str, description: str, transcri
 
         Rules:
         - Use only the provided evidence.
-        - Prefer on-screen text for quantities and written ingredients.
-        - Prefer transcript for procedural steps.
         - Prefer title/description for dish name and tags.
+        - Always prefer the more specific value when information is available in multiple sources.
+        - Note the conflict in missing_information if there is an explicit discrepancy.
         - If information is missing or ambiguous, set fields to null and record the issue in missing_information.
         - Do not invent ingredient quantities, cook times, or temperatures.
         - Return only valid JSON matching the schema.
