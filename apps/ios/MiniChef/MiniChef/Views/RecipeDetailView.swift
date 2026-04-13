@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct RecipeDetailView: View {
+    var recipeID: UUID
+
     var body: some View {
-        Text("Hello from RecipeDetailView mate")
+        VStack(spacing: 12) {
+            Text("Hello from RecipeDetailView mate")
+            Text("Currently viewing \(recipeID)")
+        }
     }
 }
 

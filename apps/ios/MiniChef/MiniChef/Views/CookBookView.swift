@@ -17,18 +17,21 @@ struct CookBookView: View {
             Text("Your recipes:")
             VStack(spacing: 12) {
                 ForEach(recipes) { recipe in
-                    VStack {
-                        Text(recipe.title)
-                            .font(.title2)
-                            .bold()
-                        Text(recipe.desc)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(8)
-                    .background(.red)
-                    .cornerRadius(12)
-//                    NavigationLink(recipe.title, value: NavigationPage.recipeDetail)
+                    NavigationLink(value: NavigationPage.recipeDetail(recipeID: recipe.id), label: {
+                        VStack {
+                            Text(recipe.title)
+                                .font(.title2)
+                                .bold()
+                            Text(recipe.desc)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(8)
+                        .frame(maxWidth: .infinity)
+                        .background(.red)
+                        .cornerRadius(12)
+                    })
+                    .buttonStyle(.plain)
                 }
             }
             .padding(16)

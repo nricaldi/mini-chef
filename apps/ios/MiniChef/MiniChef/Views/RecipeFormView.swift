@@ -36,7 +36,7 @@ struct RecipeFormView: View {
                     ForEach(0..<ingredients.count, id: \.self) { index in
                         TextField("Ingredient \(index + 1)", text: $ingredients[index])
                     }
-                    Button("Add Item") {
+                    Button("Add Ingredient") {
                         ingredients.append("")
                     }
                 }
@@ -45,7 +45,7 @@ struct RecipeFormView: View {
                     ForEach(0..<steps.count, id: \.self) { index in
                         TextField("Step \(index + 1)", text: $steps[index])
                     }
-                    Button("Add Item") {
+                    Button("Add Step") {
                         steps.append("")
                     }
                 }
