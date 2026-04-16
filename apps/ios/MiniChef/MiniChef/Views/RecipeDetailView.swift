@@ -22,14 +22,29 @@ struct RecipeDetailView: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            Text("Hello from RecipeDetailView mate")
-
             if let recipe = recipes.first {
                 Text(recipe.title)
                     .font(.largeTitle)
                     .bold()
                 Text(recipe.desc)
                     .foregroundStyle(.secondary)
+
+                List {
+                    Section(header: Text("Ingredients")) {
+                        ForEach(recipe.ingredients, id: \.self) { ingredient in
+                            Text(ingredient)
+                        }
+                    }
+
+                    Section(header: Text("Steps")) {
+                        ForEach(0..<recipe.steps.count, id: \.self) { index in
+                            HStack {
+                                Text("\(index + 1).")
+                                Text(recipe.steps[index])
+                            }
+                        }
+                    }
+                }
             } else {
                 ContentUnavailableView("Not Found", systemImage: "questionmark")
             }
