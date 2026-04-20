@@ -8,6 +8,7 @@
 import SwiftUI
 
 enum NavigationPage: Hashable {
+    case recipeEdit(recipe: Recipe)
     case recipeDetail(recipeID: UUID)
 }
 
@@ -19,6 +20,7 @@ struct ContentView: View {
             .navigationTitle("Mini chef")
             .navigationDestination(for: NavigationPage.self) { page in
                 switch page {
+                    case .recipeEdit(let recipe): RecipeFormView(recipe: recipe)
                     case .recipeDetail(let recipeID): RecipeDetailView(recipeID: recipeID)
                 }
             }

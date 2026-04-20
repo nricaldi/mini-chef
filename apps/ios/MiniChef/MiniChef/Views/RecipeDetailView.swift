@@ -10,7 +10,7 @@ import SwiftData
 
 struct RecipeDetailView: View {
     let recipeID: UUID
-    @Query private var  recipes: [Recipe]
+    @Query private var recipes: [Recipe]
 
     init(recipeID: UUID) {
         self.recipeID = recipeID
@@ -21,8 +21,8 @@ struct RecipeDetailView: View {
     }
 
     var body: some View {
-        VStack(spacing: 12) {
-            if let recipe = recipes.first {
+        if let recipe = recipes.first {
+            VStack {
                 Text(recipe.title)
                     .font(.largeTitle)
                     .bold()
@@ -45,9 +45,14 @@ struct RecipeDetailView: View {
                         }
                     }
                 }
-            } else {
-                ContentUnavailableView("Not Found", systemImage: "questionmark")
             }
+            .toolbar {
+                ToolbarItem {
+                    NavigationLink("Edit", value: NavigationPage.recipeEdit(recipe: recipe))
+                }
+            }
+        } else {
+            ContentUnavailableView("Not Found", systemImage: "questionmark")
         }
     }
 }
