@@ -7,85 +7,89 @@
 import SwiftUI
 import SwiftData
 
+struct RecipeDraft {
+    var title: String
+    var description: String
+    var ingredients: [String]
+    var steps: [String]
+}
+
 struct RecipeFormView: View {
-    @State private var recipeID: UUID?
-    @State private var title: String
-    @State private var description: String
-    @State private var ingredients: [String]
-    @State private var steps: [String]
+    @State private var draft: RecipeDraft
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
+    let recipe: Recipe?
+
     init(recipe: Recipe? = nil) {
-        _recipeID = State(initialValue: recipe?.id ?? nil)
-        _title = State(initialValue: recipe?.title ?? "")
-        _description = State(initialValue: recipe?.desc ?? "")
-        _ingredients = State(initialValue: recipe?.ingredients ?? [])
-        _steps = State(initialValue: recipe?.steps ?? [])
+        let draft = RecipeDraft(
+            title: recipe?.title ?? "",
+            description: recipe?.desc ?? "",
+            ingredients: recipe?.ingredients ?? [],
+            steps: recipe?.steps ?? []
+        )
+
+        _draft = State(initialValue: draft)
+        self.recipe = recipe
     }
 
     var body: some View {
         VStack(spacing: 16) {
-            Text(!title.isEmpty ? title : "New Recipe")
+            Text(!draft.title.isEmpty ? draft.title : "New Recipe")
                 .padding(.horizontal, 16)
                 .font(.title)
                 .bold()
 
             Form {
                 Section(header: Text("Title")) {
-                    TextField("Grandma's classic ra...", text: $title)
+                    TextField("Grandma's classic ra...", text: $draft.title)
                 }
 
                 Section(header: Text("Description")) {
-                    TextField("The best ting ever!", text: $description)
+                    TextField("The best ting ever!", text: $draft.description)
                 }
 
                 Section(header: Text("Ingredients")) {
-                    ForEach(0..<ingredients.count, id: \.self) { index in
-                        TextField("Ingredient \(index + 1)", text: $ingredients[index])
+                    ForEach(0..<draft.ingredients.count, id: \.self) { index in
+                        TextField("Ingredient \(index + 1)", text: $draft.ingredients[index])
                     }
                     Button("Add Ingredient") {
-                        ingredients.append("")
+                        draft.ingredients.append("")
                     }
                 }
 
                 Section(header: Text("Steps")) {
-                    ForEach(0..<steps.count, id: \.self) { index in
-                        TextField("Step \(index + 1)", text: $steps[index])
+                    ForEach(0..<draft.steps.count, id: \.self) { index in
+                        TextField("Step \(index + 1)", text: $draft.steps[index])
                     }
                     Button("Add Step") {
-                        steps.append("")
+                        draft.steps.append("")
                     }
                 }
             }
 
             Button("Save Recipe") { saveRecipe() } .buttonStyle(.glassProminent)
-            .disabled(title.isEmpty || description.isEmpty || ingredients.isEmpty || steps.isEmpty)
+                .disabled(draft.title.isEmpty || draft.description.isEmpty || draft.ingredients.isEmpty || draft.steps.isEmpty)
         }
         .padding(.top, 16)
     }
 
     func saveRecipe() {
-        if recipeID == nil {
-            let recipe = Recipe(title: title, desc: description, ingredients: ingredients, steps: steps)
-            modelContext.insert(recipe)
-
+        if let recipe {
+            recipe.title = draft.title
+            recipe.desc = draft.description
+            recipe.ingredients = draft.ingredients
+            recipe.steps = draft.steps
         } else {
-            guard let recipeID else {
-                dismiss()
-                return
-            }
-
-            let descriptor = FetchDescriptor<Recipe>(predicate: #Predicate { $0.id == recipeID })
-            if let recipe = try? modelContext.fetch(descriptor).first {
-                recipe.title = title
-                recipe.desc = description
-                recipe.ingredients = ingredients
-                recipe.steps = steps
-            }
+            let newRecipe = Recipe(
+                title: draft.title,
+                desc: draft.description,
+                ingredients: draft.ingredients,
+                steps: draft.steps
+            )
+            modelContext.insert(newRecipe)
         }
-
         dismiss()
     }
 }
