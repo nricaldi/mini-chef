@@ -9,12 +9,14 @@ import SwiftUI
 import SwiftData
 
 struct RecipeDetailView: View {
-    let recipeID: UUID
+    @State private var isShowingConfirm = false
+
     @Query private var recipes: [Recipe]
 
-    init(recipeID: UUID) {
-        self.recipeID = recipeID
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
 
+    init(recipeID: UUID) {
         _recipes = Query(filter: #Predicate<Recipe> { recipe in
             recipe.id == recipeID
         })
@@ -48,12 +50,41 @@ struct RecipeDetailView: View {
             }
             .toolbar {
                 ToolbarItem {
-                    NavigationLink("Edit", value: NavigationPage.recipeEdit(recipe: recipe))
+                    NavigationLink(value: NavigationPage.recipeEdit(recipe: recipe)) {
+                        Image(systemName: "square.and.pencil")
+                    }
+                }
+                ToolbarSpacer(.fixed)
+                ToolbarItem {
+                    Button(action: showConfirm) {
+                        Image(systemName: "trash")
+                    }
+                    .confirmationDialog(
+                        "Are you sure?",
+                        isPresented: $isShowingConfirm,
+                        titleVisibility: .visible
+                    ) {
+                        Button("Yes, delete", role: .destructive) { delete() }
+                        Button("No, I want to keep it", role: .cancel) { }
+                    } message: {
+                        Text("This action cannot be reverted")
+                    }
                 }
             }
         } else {
             ContentUnavailableView("Not Found", systemImage: "questionmark")
         }
+    }
+
+    func delete() {
+        if let recipe = recipes.first {
+            modelContext.delete(recipe)
+            dismiss()
+        }
+    }
+
+    func showConfirm() {
+        isShowingConfirm = true
     }
 }
 
