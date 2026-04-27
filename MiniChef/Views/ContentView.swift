@@ -17,7 +17,7 @@ struct ContentView: View {
         NavigationStack {
             CookBookView()
             .buttonStyle(.glassProminent)
-            .navigationTitle("Mini chef")
+            .navigationTitle("Your Recipes:")
             .navigationDestination(for: NavigationPage.self) { page in
                 switch page {
                     case .recipeEdit(let recipe): RecipeFormView(recipe: recipe)
