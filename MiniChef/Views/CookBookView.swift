@@ -13,8 +13,7 @@ struct CookBookView: View {
     @State private var showSheet: Bool = false
 
     var body: some View {
-        VStack {
-            Text("Your recipes:")
+        ScrollView {
             VStack(spacing: 12) {
                 ForEach(recipes) { recipe in
                     NavigationLink(value: NavigationPage.recipeDetail(recipeID: recipe.id), label: {
@@ -34,13 +33,29 @@ struct CookBookView: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding(16)
+            .frame(alignment: .topLeading)
+            .padding()
+        }
 
-            Button ("\(Image(systemName: "plus.circle.fill")) New Recipe") {
-                showSheet.toggle()
-            }
-            .sheet(isPresented: $showSheet) {
-                RecipeFormView()
+        .toolbar {
+            ToolbarItemGroup(placement: .bottomBar) {
+                Spacer()
+
+                Button {
+                    showSheet.toggle()
+                } label: {
+                    Image(systemName: "plus")
+                        .foregroundStyle(.white)
+                    Text("New Recipe")
+                        .bold()
+                        .foregroundStyle(.white)
+                        .padding(.trailing, 8)
+                }
+                .tint(.red)
+                .buttonBorderShape(.circle)
+                .sheet(isPresented: $showSheet) {
+                    RecipeFormView()
+                }
             }
         }
     }
