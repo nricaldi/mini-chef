@@ -64,8 +64,7 @@ struct RecipeDetailView: View {
                         isPresented: $isShowingConfirm,
                         titleVisibility: .visible
                     ) {
-                        Button("Yes, delete", role: .destructive) { delete() }
-                        Button("No, I want to keep it", role: .cancel) { }
+                        Button("Yes, delete this recipe", role: .destructive) { delete() }
                     } message: {
                         Text("This action cannot be reverted")
                     }
