@@ -67,12 +67,22 @@ struct RecipeFormView: View {
                         draft.steps.append("")
                     }
                 }
-            }
-
-            Button("Save Recipe") { saveRecipe() } .buttonStyle(.glassProminent)
-                .disabled(draft.title.isEmpty || draft.description.isEmpty || draft.ingredients.isEmpty || draft.steps.isEmpty)
         }
         .padding(.top, 16)
+
+        Button {
+            saveRecipe()
+        } label: {
+            Text("Save Recipe")
+                .bold()
+                .foregroundStyle(.white)
+                .padding(8)
+        }
+        .disabled(draft.title.isEmpty || draft.description.isEmpty || draft.ingredients.isEmpty || draft.steps.isEmpty)
+        .buttonStyle(.borderedProminent)
+        .tint(.red)
+        .buttonBorderShape(.capsule)
+        }
     }
 
     func saveRecipe() {
