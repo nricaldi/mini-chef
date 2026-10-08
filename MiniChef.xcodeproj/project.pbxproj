@@ -6,11 +6,58 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C980E8CC3074935D00B778AF /* ReelReceiver.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C980E8C23074935D00B778AF /* ReelReceiver.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C980E8CA3074935D00B778AF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C9E0B95C2F8A9546009978FF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C980E8C13074935D00B778AF;
+			remoteInfo = ReelReceiver;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C980E8CD3074935D00B778AF /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C980E8CC3074935D00B778AF /* ReelReceiver.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		C980E8C23074935D00B778AF /* ReelReceiver.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ReelReceiver.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C9E0B9642F8A9546009978FF /* MiniChef.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MiniChef.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C980E8D03074935D00B778AF /* Exceptions for "ReelReceiver" folder in "ReelReceiver" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C980E8C13074935D00B778AF /* ReelReceiver */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		C980E8C33074935D00B778AF /* ReelReceiver */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C980E8D03074935D00B778AF /* Exceptions for "ReelReceiver" folder in "ReelReceiver" target */,
+			);
+			path = ReelReceiver;
+			sourceTree = "<group>";
+		};
 		C9E0B9662F8A9546009978FF /* MiniChef */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MiniChef;
@@ -19,6 +66,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C980E8BF3074935D00B778AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C9E0B9612F8A9546009978FF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -33,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				C9E0B9662F8A9546009978FF /* MiniChef */,
+				C980E8C33074935D00B778AF /* ReelReceiver */,
 				C9E0B9652F8A9546009978FF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				C9E0B9642F8A9546009978FF /* MiniChef.app */,
+				C980E8C23074935D00B778AF /* ReelReceiver.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +104,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		C980E8C13074935D00B778AF /* ReelReceiver */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C980E8D13074935D00B778AF /* Build configuration list for PBXNativeTarget "ReelReceiver" */;
+			buildPhases = (
+				C980E8BE3074935D00B778AF /* Sources */,
+				C980E8BF3074935D00B778AF /* Frameworks */,
+				C980E8C03074935D00B778AF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				C980E8C33074935D00B778AF /* ReelReceiver */,
+			);
+			name = ReelReceiver;
+			packageProductDependencies = (
+			);
+			productName = ReelReceiver;
+			productReference = C980E8C23074935D00B778AF /* ReelReceiver.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		C9E0B9632F8A9546009978FF /* MiniChef */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C9E0B96F2F8A9547009978FF /* Build configuration list for PBXNativeTarget "MiniChef" */;
@@ -55,10 +133,12 @@
 				C9E0B9602F8A9546009978FF /* Sources */,
 				C9E0B9612F8A9546009978FF /* Frameworks */,
 				C9E0B9622F8A9546009978FF /* Resources */,
+				C980E8CD3074935D00B778AF /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C980E8CB3074935D00B778AF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C9E0B9662F8A9546009978FF /* MiniChef */,
@@ -77,9 +157,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2640;
+				LastSwiftUpdateCheck = 2700;
 				LastUpgradeCheck = 2640;
 				TargetAttributes = {
+					C980E8C13074935D00B778AF = {
+						CreatedOnToolsVersion = 27.0;
+					};
 					C9E0B9632F8A9546009978FF = {
 						CreatedOnToolsVersion = 26.4;
 					};
@@ -100,11 +183,19 @@
 			projectRoot = "";
 			targets = (
 				C9E0B9632F8A9546009978FF /* MiniChef */,
+				C980E8C13074935D00B778AF /* ReelReceiver */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C980E8C03074935D00B778AF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C9E0B9622F8A9546009978FF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +206,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C980E8BE3074935D00B778AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C9E0B9602F8A9546009978FF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +222,73 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		C980E8CB3074935D00B778AF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C980E8C13074935D00B778AF /* ReelReceiver */;
+			targetProxy = C980E8CA3074935D00B778AF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		C980E8CE3074935D00B778AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6577G4Z6FG;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReelReceiver/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ReelReceiver;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nicoricaldi.MiniChef.ReelReceiver;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C980E8CF3074935D00B778AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6577G4Z6FG;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ReelReceiver/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ReelReceiver;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nicoricaldi.MiniChef.ReelReceiver;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		C9E0B96D2F8A9547009978FF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -313,6 +477,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C980E8D13074935D00B778AF /* Build configuration list for PBXNativeTarget "ReelReceiver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C980E8CE3074935D00B778AF /* Debug */,
+				C980E8CF3074935D00B778AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C9E0B95F2F8A9546009978FF /* Build configuration list for PBXProject "MiniChef" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
